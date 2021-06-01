@@ -767,11 +767,11 @@ namespace Word2Vec.Net
                 if (_classes == 0)
                 {
                     // Save the word vectors
-                    var bytes = string.Format("{0} {1}\n", _vocabSize, _layer1Size).GetBytes();
+                    var bytes = Encoding.UTF8.GetBytes($"{_vocabSize} {_layer1Size}\n");
                     stream.Write(bytes, 0, bytes.Length);
                     for (var a = 0; a < _vocabSize; a++)
                     {
-                        bytes = string.Concat(_vocab[a].Word, ' ').GetBytes();
+                        bytes = Encoding.UTF8.GetBytes(string.Concat(_vocab[a].Word, ' '));
                         stream.Write(bytes, 0, bytes.Length);
                         if (_binary > 0)
                         {
@@ -787,11 +787,11 @@ namespace Word2Vec.Net
                         {
                             for (b = 0; b < _layer1Size; b++)
                             {
-                                bytes = string.Concat((_syn0[a * _layer1Size + b]).ToString(CultureInfo.InvariantCulture), " ").GetBytes();
+                                bytes = Encoding.UTF8.GetBytes((string.Concat((_syn0[a * _layer1Size + b]).ToString(CultureInfo.InvariantCulture), " ")));
                                 stream.Write(bytes, 0, bytes.Length);
                             }
                         }
-                        bytes = "\n".GetBytes();
+                        bytes = Encoding.UTF8.GetBytes("\n");
                         stream.Write(bytes, 0, bytes.Length);
                     }
                 }
@@ -847,7 +847,7 @@ namespace Word2Vec.Net
                     // Save the K-means classes
                     for (var a = 0; a < _vocabSize; a++)
                     {
-                        var bytes = string.Format("{0} {1}\n", _vocab[a].Word, cl[a]).GetBytes();
+                        var bytes = Encoding.UTF8.GetBytes($"{_vocab[a].Word} {cl[a]}\n");
                         stream.Write(bytes, 0, bytes.Length);
                     }
 

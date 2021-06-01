@@ -42,7 +42,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Distance.cs" />
-    <Compile Include="StringExtension.cs" />
     <Compile Include="Utils\FileStreamExtensions.cs" />
     <Compile Include="VocubWord.cs" />
     <Compile Include="Word2Phrase.cs" />

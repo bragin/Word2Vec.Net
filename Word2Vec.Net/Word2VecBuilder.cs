@@ -20,8 +20,8 @@ namespace Word2Vec.Net
         private int _layer1Size = 100;
         private long _iter = 5;
         private long _classes = 0;
-        private float _alpha = (float) 0.025;
-        private float _sample = (float) 1e-3;
+        private float _alpha = (float)0.025;
+        private float _sample = (float)1e-3;
 
         private int _hs = 0;
         private int _negative = 5;

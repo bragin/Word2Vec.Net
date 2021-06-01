@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Word2Vec.Net
 {
-    public class WordAnalogy :Word2VecAnalysisBase
+    public class WordAnalogy : Word2VecAnalysisBase
     {
 
         public WordAnalogy(string fileName) : base(fileName) { }
@@ -33,44 +33,44 @@ namespace Word2Vec.Net
             }
             if (b == -1) return new BestWord[0];
             //Console.WriteLine("\n                                              Word              Distance\n------------------------------------------------------------------------\n");
-                for (long a = 0; a < Size; a++) vec[a] = M[a + bi[1] * Size] - M[a + bi[0] * Size] + M[a + bi[2] * Size];
-                float  len = 0;
-                for (long a = 0; a < Size; a++) len += vec[a] * vec[a];
-                len = (float)Math.Sqrt(len);
-                for (long a = 0; a < Size; a++) vec[a] /= len;
-                //for (long a = 0; a < N; a++) bestd[a] = 0;
-                //for (a = 0; a < N; a++) bestw[a][0] = 0;
-                for (long c = 0; c < Words; c++)
+            for (long a = 0; a < Size; a++) vec[a] = M[a + bi[1] * Size] - M[a + bi[0] * Size] + M[a + bi[2] * Size];
+            float len = 0;
+            for (long a = 0; a < Size; a++) len += vec[a] * vec[a];
+            len = (float)Math.Sqrt(len);
+            for (long a = 0; a < Size; a++) vec[a] /= len;
+            //for (long a = 0; a < N; a++) bestd[a] = 0;
+            //for (a = 0; a < N; a++) bestw[a][0] = 0;
+            for (long c = 0; c < Words; c++)
+            {
+                if (c == bi[0]) continue;
+                if (c == bi[1]) continue;
+                if (c == bi[2]) continue;
+                long a = 0;
+                for (b = 0; b < cn; b++) if (bi[b] == c) a = 1;
+                if (a == 1) continue;
+                float dist = 0;
+                for (a = 0; a < Size; a++) dist += vec[a] * M[a + c * Size];
+                for (a = 0; a < N; a++)
                 {
-                    if (c == bi[0]) continue;
-                    if (c == bi[1]) continue;
-                    if (c == bi[2]) continue;
-                    long a = 0;
-                    for (b = 0; b < cn; b++) if (bi[b] == c) a = 1;
-                    if (a == 1) continue;
-                    float dist = 0;
-                    for (a = 0; a < Size; a++) dist += vec[a] * M[a + c * Size];
-                    for (a = 0; a < N; a++)
+                    if (dist > bestWords[a].Distance)
                     {
-                        if (dist > bestWords[a].Distance)
+                        for (long d = N - 1; d > a; d--)
                         {
-                            for (long d = N - 1; d > a; d--)
-                            {
                             bestWords[d] = bestWords[d - 1];
                             //bestd[d] = bestd[d - 1];
                             //    strcpy(bestw[d], bestw[d - 1]);
-                            }
+                        }
                         bestWords[a].Distance = dist;
                         //bestd[a] = dist;
                         bestWords[a].Word = new string(Vocab, (int)(max_w * c), (int)max_w);
                         break;
-                        }
                     }
                 }
+            }
             //for (a = 0; a < N; a++) printf("%50s\t\t%f\n", bestw[a], bestd[a]);
             return bestWords;
-            }
+        }
 
-        
+
     }
 }

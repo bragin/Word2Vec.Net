@@ -20,7 +20,7 @@ namespace Word2Vec.Net
         private readonly string _outputFile;
         private readonly int _debugMode;
         private readonly int _minCount;
-      
+
         #endregion
         private VocubWord[] _vocab;
         private int _minReduce = 1;
@@ -30,20 +30,20 @@ namespace Word2Vec.Net
         private long _trainWords;
         private int _threshold = 100;
 
-       
+
         public Word2Phrase(
             string trainFileName,
             string outPutfileName,
             int debugMode,
             int minCount,
             int threshold
-           
+
             )
         {
             _trainFile = trainFileName;
             _outputFile = outPutfileName;
             _vocab = new VocubWord[_vocabMaxSize];
-            _vocabHash = new int[VocabHashSize]; 
+            _vocabHash = new int[VocabHashSize];
             _debugMode = debugMode;
             _minCount = minCount;
             _threshold = threshold;
@@ -172,7 +172,7 @@ namespace Word2Vec.Net
                 AddWordToVocab("</s>");
                 while ((line = fin.ReadLine()) != null)
                 {
-                    
+
                     string[] words = regex.Split(line);
 
                     foreach (var word in words)
@@ -203,15 +203,15 @@ namespace Word2Vec.Net
                             _vocab[i].Cn++;
 
 
-                      
-                        if (start!=0) continue;
+
+                        if (start != 0) continue;
                         string bigram_word = last_word + "_" + word;
                         last_word = word;
-                       
+
                         i = SearchVocab(bigram_word);
                         if (i == -1)
                         {
-                           var a = AddWordToVocab(bigram_word);
+                            var a = AddWordToVocab(bigram_word);
                             _vocab[a].Cn = 1;
                         }
                         else _vocab[i].Cn++;
@@ -230,7 +230,7 @@ namespace Word2Vec.Net
                     Console.WriteLine("Vocab size: {0}", _vocabSize);
                     Console.WriteLine("Words in train file: {0}", _trainWords);
                 }
-              
+
             }
 
 
@@ -240,13 +240,13 @@ namespace Word2Vec.Net
         public void TrainModel()
         {
             Regex splitRegex = new Regex("\\s");
-            long d,cn=0,oov,i,pb=0,li=-1,pa=0,pab=0;
+            long d, cn = 0, oov, i, pb = 0, li = -1, pa = 0, pab = 0;
             float score = 0;
-            string word="";
+            string word = "";
             string lastWord = "";
             Console.WriteLine("Starting training using file {0}\n", _trainFile);
             LearnVocabFromTrainFile();
-           
+
             using (StreamReader fi = File.OpenText(_trainFile))
             {
                 using (var stream = new StreamWriter(_outputFile, false, Encoding.UTF8))
@@ -266,7 +266,7 @@ namespace Word2Vec.Net
                                 stream.Write("\n");
                                 continue;
                             }
-                            
+
                             cn++;
                             if ((_debugMode > 1) && (cn % 100000 == 0))
                             {
@@ -284,7 +284,7 @@ namespace Word2Vec.Net
                             }
                             if (li == -1) oov = 1;
                             li = i;
-                            string bigram_word = lastWord+"_"+word;
+                            string bigram_word = lastWord + "_" + word;
                             i = SearchVocab(bigram_word);
                             if (i == -1)
                             {
@@ -297,7 +297,7 @@ namespace Word2Vec.Net
                             if (pa < _minCount) oov = 1;
                             if (pb < _minCount) oov = 1;
 
-                            if (oov!=0) score = 0;
+                            if (oov != 0) score = 0;
                             else
                                 score = (pab - _minCount) / (float)pa / (float)pb * (float)_trainWords;
                             if (score > _threshold)
@@ -309,7 +309,7 @@ namespace Word2Vec.Net
                             pa = pb;
 
                             lastWord = word;
-                            
+
                         }
                         if (fi.EndOfStream)
                         {
@@ -323,7 +323,7 @@ namespace Word2Vec.Net
             }
 
             GC.Collect();
-           
+
         }
 
     }

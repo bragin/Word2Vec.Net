@@ -20,7 +20,7 @@ namespace Word2Vec.Net
     {
         public int Compare(VocubWord x, VocubWord y)
         {
-            return (int)(y.Cn - x.Cn );
+            return (int)(y.Cn - x.Cn);
         }
     }
 }

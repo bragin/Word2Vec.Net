@@ -386,7 +386,7 @@ namespace Word2Vec.Net
                 using (var streamWriter = new StreamWriter(stream))
                 {
                     for (var i = 0; i < _vocabSize; i++)
-                        streamWriter.WriteLine("{0} {1}", _vocab[i].Word, _vocab[i].Cn);
+                        streamWriter.WriteLine($"{_vocab[i].Word}\t{_vocab[i].Cn}");
                 }
             }
         }
@@ -398,15 +398,13 @@ namespace Word2Vec.Net
             using (var fin = File.OpenText(_readVocabFile))
             {
                 string line;
-                var regex = new Regex("\\s");
                 while ((line = fin.ReadLine()) != null)
                 {
-                    var vals = regex.Split(line);
-                    if (vals.Length == 2)
-                    {
-                        var a = AddWordToVocab(vals[0]);
-                        _vocab[a].Cn = int.Parse(vals[1]);
-                    }
+                    var vals = line.Split(new[] { "\t" }, StringSplitOptions.None);
+                    if (vals.Length != 2) continue;
+
+                    var a = AddWordToVocab(vals[0]);
+                    _vocab[a].Cn = int.Parse(vals[1]);
                 }
                 SortVocab();
                 if (_debugMode > 0)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -27,7 +28,6 @@ namespace Word2Vec.Net
         private readonly string _outputFile;
         private readonly string _saveVocabFile;
         private readonly string _readVocabFile;
-        private readonly int _binary;
         private readonly int _cbow;
         private readonly int _debugMode;
         private readonly int _window;
@@ -65,7 +65,6 @@ namespace Word2Vec.Net
             string readVocubFileName,
             int size,
             int debugMode,
-            int binary,
             int cbow,
             float alpha,
             float sample,
@@ -92,7 +91,6 @@ namespace Word2Vec.Net
             _readVocabFile = readVocubFileName;
             _layer1Size = size;
             _debugMode = debugMode;
-            _binary = binary;
             _cbow = cbow;
             _alpha = alpha;
             _sample = sample;
@@ -759,38 +757,21 @@ namespace Word2Vec.Net
                 throw new InvalidOperationException();
             }
             //TrainModelThreadStart(1);
-            using (var stream = new FileStream(_outputFile, FileMode.Create, FileAccess.Write))
+            using (var fs = new FileStream(_outputFile, FileMode.Create, FileAccess.Write))
+            using (var writer = new StreamWriter(fs))
             {
                 long b;
                 if (_classes == 0)
                 {
                     // Save the word vectors
-                    var bytes = Encoding.UTF8.GetBytes($"{_vocabSize} {_layer1Size}\n");
-                    stream.Write(bytes, 0, bytes.Length);
+                    writer.WriteLine($"{_vocabSize} {_layer1Size}");
                     for (var a = 0; a < _vocabSize; a++)
                     {
-                        bytes = Encoding.UTF8.GetBytes(string.Concat(_vocab[a].Word, ' '));
-                        stream.Write(bytes, 0, bytes.Length);
-                        if (_binary > 0)
-                        {
+                        var bytesList = new List<byte>();
+                        for (b = 0; b < _layer1Size; b++)
+                            bytesList.AddRange(BitConverter.GetBytes(_syn0[a * _layer1Size + b]));
 
-                            for (b = 0; b < _layer1Size; b++)
-                            {
-                                bytes = BitConverter.GetBytes(_syn0[a * _layer1Size + b]);
-                                stream.Write(bytes, 0, bytes.Length);
-                            }
-                        }
-
-                        else
-                        {
-                            for (b = 0; b < _layer1Size; b++)
-                            {
-                                bytes = Encoding.UTF8.GetBytes((string.Concat((_syn0[a * _layer1Size + b]).ToString(CultureInfo.InvariantCulture), " ")));
-                                stream.Write(bytes, 0, bytes.Length);
-                            }
-                        }
-                        bytes = Encoding.UTF8.GetBytes("\n");
-                        stream.Write(bytes, 0, bytes.Length);
+                        writer.WriteLine($"{_vocab[a].Word}\t{Convert.ToBase64String(bytesList.ToArray())}");
                     }
                 }
                 else
@@ -845,8 +826,7 @@ namespace Word2Vec.Net
                     // Save the K-means classes
                     for (var a = 0; a < _vocabSize; a++)
                     {
-                        var bytes = Encoding.UTF8.GetBytes($"{_vocab[a].Word} {cl[a]}\n");
-                        stream.Write(bytes, 0, bytes.Length);
+                        writer.WriteLine($"{_vocab[a].Word} {cl[a]}");
                     }
 
 

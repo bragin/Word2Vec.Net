@@ -12,7 +12,6 @@ namespace Word2Vec.Net
         private string _outputFile;
         private string _saveVocabFile;
         private string _readVocabFile;
-        private int _binary = 0;
         private int _cbow = 1;
         private int _debugMode = 2;
         private int _minCount = 5;
@@ -71,11 +70,6 @@ namespace Word2Vec.Net
         public Word2VecBuilder WithDebug(int debugMode)
         {
             this._debugMode = debugMode;
-            return this;
-        }
-        public Word2VecBuilder WithBinary(int binary)
-        {
-            this._binary = binary;
             return this;
         }
         public Word2VecBuilder WithCBow(int cbow)
@@ -143,7 +137,6 @@ namespace Word2Vec.Net
                 _readVocabFile,
                 _layer1Size,
                 _debugMode,
-                _binary,
                 _cbow,
                 _alpha,
                 _sample,

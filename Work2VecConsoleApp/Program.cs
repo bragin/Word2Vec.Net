@@ -82,8 +82,6 @@ namespace Work2VecConsoleApp
                 builder.WithReadVocubFile(args[i + 1]);
             if ((i = ArgPos("-debug", args)) > -1)
                 builder.WithDebug(int.Parse(args[i + 1]));
-            if ((i = ArgPos("-binary", args)) > -1)
-                builder.WithBinary(int.Parse(args[i + 1]));
             if ((i = ArgPos("-cbow", args)) > -1)
                 builder.WithCBow(int.Parse(args[i + 1]));
             if ((i = ArgPos("-alpha", args)) > -1)

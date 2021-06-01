@@ -240,7 +240,7 @@ namespace Word2Vec.Net
         public void TrainModel()
         {
             Regex splitRegex = new Regex("\\s");
-            long d, cn = 0, oov, i, pb = 0, li = -1, pa = 0, pab = 0;
+            long cn = 0, oov, i, pb = 0, li = -1, pa = 0, pab = 0;
             float score = 0;
             string word = "";
             string lastWord = "";

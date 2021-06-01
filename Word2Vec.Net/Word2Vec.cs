@@ -582,7 +582,7 @@ namespace Word2Vec.Net
                                     for (c = 0; c < _layer1Size; c++) f += neu1[c] * _syn1[c + l2];
                                     if (f <= MaxExp * -1) continue;
                                     if (f >= MaxExp) continue;
-                                    f = _expTable[(int)((f + MaxExp) * (ExpTableSize / MaxExp / 2))];
+                                    f = _expTable[(int)((f + MaxExp) * (ExpTableSize / (float)MaxExp / 2))];
                                     // 'g' is the gradient multiplied by the learning rate
                                     g = (1 - _vocab[word].Code[d] - f) * _alpha;
                                     // Propagate errors output -> hidden
@@ -617,7 +617,7 @@ namespace Word2Vec.Net
                                     if (f > MaxExp) g = (label - 1) * _alpha;
                                     else if (f < MaxExp * -1) g = (label - 0) * _alpha;
                                     else
-                                        g = (label - _expTable[(int)((f + MaxExp) * (ExpTableSize / MaxExp / 2))]) * _alpha;
+                                        g = (label - _expTable[(int)((f + MaxExp) * (ExpTableSize / (float)MaxExp / 2))]) * _alpha;
                                     for (c = 0; c < _layer1Size; c++) neu1e[c] += g * _syn1Neg[c + l2];
                                     for (c = 0; c < _layer1Size; c++) _syn1Neg[c + l2] += g * neu1[c];
                                 }
@@ -666,7 +666,7 @@ namespace Word2Vec.Net
                                         for (c = 0; c < _layer1Size; c++) f += _syn0[c + l1] * _syn1[c + l2];
                                         if (f <= MaxExp * -1) continue;
                                         if (f >= MaxExp) continue;
-                                        f = _expTable[(int)((f + MaxExp) * (ExpTableSize / MaxExp / 2))];
+                                        f = _expTable[(int)((f + MaxExp) * (ExpTableSize / (float)MaxExp / 2))];
                                         // 'g' is the gradient multiplied by the learning rate
                                         g = (1 - _vocab[word].Code[d] - f) * _alpha;
                                         // Propagate errors output -> hidden
@@ -701,7 +701,7 @@ namespace Word2Vec.Net
                                         if (f > MaxExp) g = (label - 1) * _alpha;
                                         else if (f < MaxExp * -1) g = (label - 0) * _alpha;
                                         else
-                                            g = (label - _expTable[(int)((f + MaxExp) * (ExpTableSize / MaxExp / 2))]) *
+                                            g = (label - _expTable[(int)((f + MaxExp) * (ExpTableSize / (float)MaxExp / 2))]) *
                                                     _alpha;
                                         for (c = 0; c < _layer1Size; c++) neu1e[c] += g * _syn1Neg[c + l2];
                                         for (c = 0; c < _layer1Size; c++) _syn1Neg[c + l2] += g * _syn0[c + l1];

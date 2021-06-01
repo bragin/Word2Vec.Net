@@ -247,8 +247,6 @@ namespace Word2Vec.Net
         // Frequent words will have short uniqe binary codes
         private void CreateBinaryTree()
         {
-            long pos1;
-            long pos2;
             var code = new char[MaxCodeLength];
             var point = new long[MaxCodeLength];
             var count = new long[_vocabSize * 2 + 1];
@@ -257,8 +255,8 @@ namespace Word2Vec.Net
 
             for (var a = 0; a < _vocabSize; a++) count[a] = _vocab[a].Cn;
             for (var a = _vocabSize; a < _vocabSize * 2; a++) count[a] = (long)1e15;
-            pos1 = _vocabSize - 1;
-            pos2 = _vocabSize;
+            long pos1 = _vocabSize - 1;
+            long pos2 = _vocabSize;
             // Following algorithm constructs the Huffman tree by adding one node at a time
             for (var a = 0; a < _vocabSize - 1; a++)
             {
@@ -332,7 +330,6 @@ namespace Word2Vec.Net
 
         private void LearnVocabFromTrainFile()
         {
-            int i;
             for (var a = 0; a < VocabHashSize; a++) _vocabHash[a] = -1;
             using (var fin = File.OpenText(_trainFile))
             {
@@ -359,7 +356,7 @@ namespace Word2Vec.Net
                             //printf("%lldK%c", train_words / 1000, 13);
                             //fflush(stdout);
                         }
-                        i = SearchVocab(word);
+                        int i = SearchVocab(word);
                         if (i == -1)
                         {
                             var a = AddWordToVocab(word);
@@ -728,9 +725,6 @@ namespace Word2Vec.Net
                         sentenceLength = 0;
                     }
                 }
-                //fclose(fi);
-                //free(neu1);
-                //free(neu1e);
                 //pthread_exit(NULL);
             }
             neu1 = null;
@@ -861,11 +855,7 @@ namespace Word2Vec.Net
                     centcn = null;
                     cent = null;
                     cl = null;
-                    //free(centcn);
-                    //free(cent);
-                    //free(cl);
                 }
-                //fclose(fo);
             }
             GC.Collect();
         }

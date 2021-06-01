@@ -347,7 +347,6 @@ namespace Word2Vec.Net
                     AddWordToVocab("</s>");
                 while ((line = fin.ReadLine()) != null)
                     {
-                        if (fin.EndOfStream) break;
                     string[] words = regex.Split(line);
 
                     foreach (var word in words)

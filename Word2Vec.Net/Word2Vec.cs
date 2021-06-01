@@ -554,12 +554,14 @@ namespace Word2Vec.Net
                     float f;
                     long target;
                     long l2;
+
                     if (_cbow > 0)
                     {
                         //train the cbow architecture
                         // in -> hidden
                         long cw = 0;
                         for (var a = b; a < _window * 2 + 1 - b; a++)
+                        {
                             if (a != _window)
                             {
                                 c = sentencePosition - _window + a;
@@ -570,10 +572,15 @@ namespace Word2Vec.Net
                                 for (c = 0; c < _layer1Size; c++) neu1[c] += _syn0[c + lastWord * _layer1Size];
                                 cw++;
                             }
+                        }
+
                         if (cw > 0)
                         {
                             for (c = 0; c < _layer1Size; c++) neu1[c] /= cw;
+
+                            #region [HIERARCHICAL SOFTMAX]
                             if (_hs > 0)
+                            {
                                 for (d = 0; d < _vocab[word].CodeLen; d++)
                                 {
                                     f = 0;
@@ -590,8 +597,12 @@ namespace Word2Vec.Net
                                     // Learn weights hidden -> output
                                     for (c = 0; c < _layer1Size; c++) _syn1[c + l2] += g * neu1[c];
                                 }
-                            // NEGATIVE SAMPLING
+                            }
+                            #endregion
+
+                            #region [NEGATIVE SAMPLING]
                             if (_negative > 0)
+                            {
                                 for (d = 0; d < _negative + 1; d++)
                                 {
                                     if (d == 0)
@@ -617,8 +628,12 @@ namespace Word2Vec.Net
                                     for (c = 0; c < _layer1Size; c++) neu1e[c] += g * _syn1Neg[c + l2];
                                     for (c = 0; c < _layer1Size; c++) _syn1Neg[c + l2] += g * neu1[c];
                                 }
+                            }
+                            #endregion
+
                             // hidden -> in
                             for (var a = b; a < _window * 2 + 1 - b; a++)
+                            {
                                 if (a != _window)
                                 {
                                     c = sentencePosition - _window + a;
@@ -628,12 +643,15 @@ namespace Word2Vec.Net
                                     if (lastWord == -1) continue;
                                     for (c = 0; c < _layer1Size; c++) _syn0[c + lastWord * _layer1Size] += neu1e[c];
                                 }
+                            }
                         }
                     }
                     else
                     {
+                        #region [skip-gram]
                         //train skip-gram
                         for (var a = b; a < _window * 2 + 1 - b; a++)
+                        {
                             if (a != _window)
                             {
                                 c = sentencePosition - _window + a;
@@ -643,8 +661,10 @@ namespace Word2Vec.Net
                                 if (lastWord == -1) continue;
                                 var l1 = lastWord * _layer1Size;
                                 for (c = 0; c < _layer1Size; c++) neu1e[c] = 0;
-                                // HIERARCHICAL SOFTMAX
+
+                                #region [HIERARCHICAL SOFTMAX]
                                 if (_hs != 0)
+                                {
                                     for (d = 0; d < _vocab[word].CodeLen; d++)
                                     {
                                         f = 0;
@@ -661,8 +681,12 @@ namespace Word2Vec.Net
                                         // Learn weights hidden -> output
                                         for (c = 0; c < _layer1Size; c++) _syn1[c + l2] += g * _syn0[c + l1];
                                     }
-                                // NEGATIVE SAMPLING
+                                }
+                                #endregion
+
+                                #region [NEGATIVE SAMPLING]
                                 if (_negative > 0)
+                                {
                                     for (d = 0; d < _negative + 1; d++)
                                     {
                                         if (d == 0)
@@ -689,9 +713,14 @@ namespace Word2Vec.Net
                                         for (c = 0; c < _layer1Size; c++) neu1e[c] += g * _syn1Neg[c + l2];
                                         for (c = 0; c < _layer1Size; c++) _syn1Neg[c + l2] += g * _syn0[c + l1];
                                     }
+                                }
+                                #endregion
+
                                 // Learn weights input -> hidden
                                 for (c = 0; c < _layer1Size; c++) _syn0[c + l1] += neu1e[c];
                             }
+                        }
+                        #endregion
                     }
                     sentencePosition++;
                     if (sentencePosition >= sentenceLength)

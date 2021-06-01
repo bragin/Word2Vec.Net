@@ -108,6 +108,8 @@ namespace Work2VecConsoleApp
             Word2Vec.Net.Word2Vec word2Vec = builder.Build();
             word2Vec.TrainModel();
 
+            if (String.IsNullOrEmpty(outputFileName)) return;
+
             var distance = new Distance(outputFileName);
             while (true)
             {

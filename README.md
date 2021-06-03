@@ -53,7 +53,6 @@ OR
 			.WithSize(200)//Set size of word vectors; default is 100
 			.WithSaveVocubFile()//The vocabulary will be saved to <file>
 			.WithDebug(2)//Set the debug mode (default = 2 = more info during training)
-			.WithBinary(1)//Save the resulting vectors in binary moded; default is 0 (off)
 			.WithCBow(1)//Use the continuous bag of words model; default is 1 (use 0 for skip-gram model)
 			.WithAlpha(0.05)//Set the starting learning rate; default is 0.025 for skip-gram and 0.05 for CBOW
 			.WithWindow(7)//Set max skip length between words; default is 5

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define BINARY_FORMAT
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -459,7 +461,7 @@ namespace Word2Vec.Net
             //Console.WriteLine("{0} started", id);
             Thread.Sleep(100);
             var nextRandom = (ulong)id;
-            float g;
+
             var neu1 = new float[_layer1Size];
             var neu1e = new float[_layer1Size];
             using (StreamReader fi = File.OpenText(_trainFile))
@@ -547,6 +549,7 @@ namespace Word2Vec.Net
                     float f;
                     long target;
                     long l2;
+                    float g;
 
                     if (_cbow > 0)
                     {
@@ -767,11 +770,19 @@ namespace Word2Vec.Net
                     writer.WriteLine($"{_vocabSize} {_layer1Size}");
                     for (var a = 0; a < _vocabSize; a++)
                     {
+
+#if BINARY_FORMAT
                         var bytesList = new List<byte>();
                         for (b = 0; b < _layer1Size; b++)
                             bytesList.AddRange(BitConverter.GetBytes(_syn0[a * _layer1Size + b]));
 
                         writer.WriteLine($"{_vocab[a].Word}\t{Convert.ToBase64String(bytesList.ToArray())}");
+#else
+                        writer.Write($"{_vocab[a].Word}\t");
+                        for (b = 0; b < _layer1Size; b++)
+                            writer.Write($"{_syn0[a * _layer1Size + b]} ");
+                        writer.WriteLine();
+#endif
                     }
                 }
                 else
